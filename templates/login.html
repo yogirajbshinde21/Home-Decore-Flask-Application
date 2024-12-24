@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block remtitle %}Login{% endblock %}
+{% block cont %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+<!-- MDB -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.20.0/css/mdb.min.css" rel="stylesheet">
+<style>
+    /* Background Styling */
+    body {
+        background: linear-gradient(135deg, #74ebd5, #9face6);
+        font-family: 'Poppins', sans-serif;
+        color: #333;
+    }
+
+    /* Login Card Styling */
+    .login-card {
+        background: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+        border: 2px solid rgba(108, 99, 255, 0.5); /* Subtle border for separation */
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background: linear-gradient(135deg, #6c63ff, #74ebd5);
+        border: none;
+        border-radius: 50px;
+        padding: 0.75rem 2rem;
+        font-weight: bold;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 6px 15px rgba(108, 99, 255, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 12px 30px rgba(108, 99, 255, 0.6);
+    }
+
+    /* Input Styling */
+    .form-control {
+        border: 1px solid #ccc;
+        border-radius: 12px;
+    }
+
+    .form-control:focus {
+        border-color: #6c63ff;
+        box-shadow: 0 0 0 0.2rem rgba(108, 99, 255, 0.25);
+    }
+
+    /* Text Link Styling */
+    .text-primary {
+        color: #6c63ff !important;
+        transition: color 0.3s ease;
+    }
+
+    .text-primary:hover {
+        color: #4e3cb5 !important;
+        text-decoration: underline;
+    }
+</style>
+
+{% endblock %}
+
+{% set hide_toggler = True %}
+
+{% block home %}  
+<a class="navbar-brand text-center w-100" href="/">HomeDecore Services</a> 
+{% endblock %}
+
+{% block content %}
+<div class="container min-vh-100 d-flex align-items-center">
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6">
+            <div class="login-card">
+                <h2 class="text-primary fw-bold mb-4 text-center">Login</h2>
+                
+                <form method="POST" action="{{ url_for('login') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               required value="{{ username if username else '' }}">
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn w-100 fw-bold btn-primary">
+                        Login
+                    </button>
+                </form>
+                <div class="mt-4 text-center">
+                    <p class="text-muted mb-1">Don't have an account?</p>
+                    <a href="/professional_register" class="text-primary">Register as Professional</a><br>
+                    <a href="/customer_register" class="text-primary">Register as Customer</a>
+                </div>
+                <div class="mt-4 text-center text-muted">
+                    Are you an admin? <a href="/admin_login_page" class="text-primary fw-bold">Click here</a> to login.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

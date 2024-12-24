@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block cont %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block home %}  
+<a class="navbar-brand" href="/admin_dashboard">HomeDecore Services</a> 
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('service_requests') }}">Service Requests</a>
+    </li>
+    <li>
+        <a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('search_professionals') }}">Search Professionals</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('search_customers') }}">Search Customers</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Page Header -->
+    <div class="row bg-danger text-white py-4 mb-4 shadow-sm">
+        <div class="col-12 text-center">
+            <h1 class="display-4 mb-3">
+                <i class="fas fa-concierge-bell me-3"></i>Add New Category
+            </h1>
+        </div>
+    </div>
+
+    <!-- Add Category Form -->
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-danger-gradient text-white text-center">
+                    <h3 class="mb-0">Add New Category</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('admin_add_category') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Category Name</label>
+                            <input type="text" class="form-control" id="categoryName" name="category_name" placeholder="Enter category name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="categoryDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="categoryDescription" name="description" rows="4" placeholder="Enter category description"></textarea>
+                        </div>
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-danger-gradient w-100 py-2" style="border: 2px solid #000000; border-radius: 5px; transition: transform 0.3s ease, background-color 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='#ff4444';" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='';">
+                            <i class="fas fa-plus me-2"></i>Add Category
+                        </button>
+                        <!-- Back Button -->
+                        <a href="{{ url_for('admin_availableService') }}" class="btn btn-outline-secondary w-100 py-2 mt-3" style="border: 2px solid #6c757d; border-radius: 5px; transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='#6c757d'; this.style.color='#ffffff';" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor=''; this.style.color='';">
+                            <i class="fas fa-arrow-left me-2"></i>Back
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

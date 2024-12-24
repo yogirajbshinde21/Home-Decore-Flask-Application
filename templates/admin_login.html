@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block remtitle %}Admin Login{% endblock %}
+
+{% block cont %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+
+<!-- MDB -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.20.0/js/mdb.min.js">
+
+<style>
+    /* Background Styling */
+    body {
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb);
+        font-family: 'Poppins', sans-serif;
+        color: #333;
+    }
+
+    /* Admin Login Card Styling */
+    .admin-login-card {
+        background: #ffffff;
+        border: 2px solid rgba(220, 53, 69, 0.3); /* Subtle red border */
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 25px rgba(220, 53, 69, 0.15); /* Red-tinted shadow */
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Button Styling */
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545, #ff6b81);
+        border: none;
+        border-radius: 50px;
+        padding: 0.75rem 2rem;
+        font-weight: bold;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 12px 30px rgba(220, 53, 69, 0.6);
+    }
+
+    /* Input Focus Styling */
+    .form-control {
+        border: 1px solid #ccc;
+        border-radius: 12px;
+    }
+
+    .form-control:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    /* Text Link Styling */
+    .text-danger {
+        color: #dc3545 !important;
+        transition: color 0.3s ease;
+    }
+
+    .text-danger:hover {
+        color: #b02a37 !important;
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% set hide_toggler = True %}
+
+{% block home %}  <a class="navbar-brand text-center w-100" href="/">HomeDecore Services</a> {% endblock %}
+{% block content %}
+<div class="container min-vh-100 d-flex align-items-center">
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6">
+            <div class="admin-login-card">
+                <h2 class="text-danger fw-bold mb-4 text-center">Admin Login</h2>
+                
+                <form action="/admin_login_page" method="post">
+                    <div class="mb-3">
+                        <label for="admin_username" class="form-label">Admin Username</label>
+                        <input type="text" class="form-control" id="admin_username" name="admin_username" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="admin_password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="admin_password" name="admin_password" required>
+                    </div>
+                    <button type="submit" class="btn w-100 fw-bold btn-danger">Login as Admin</button>
+                </form>
+
+                <div class="mt-4 text-center">
+                    <a href="/login" class="text-danger">Go to User Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

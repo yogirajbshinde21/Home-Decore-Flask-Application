@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block remtitle %}Add Service{% endblock %}
+
+{% block home %}
+<a class="navbar-brand" href="/admin_dashboard">HomeDecore Services</a>
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('service_requests') }}">Service Requests</a>
+    </li>
+    <li><a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a></li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('search_professionals') }}">Search Professionals</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('search_customers') }}">Search Customers</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="display-4 text-danger">Add Service</h1>
+            <p class="lead">Fill in the details below to add a new service</p>
+        </div>
+    </div>
+
+    <!-- Add Service Form -->
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-danger-gradient text-white text-center">
+                    <h3 class="mb-0">Add Service</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form action="{{ url_for('admin_add_service') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category:</label>
+                            <select class="form-select" id="category" name="category_id" required>
+                                <option value="">Select a Category</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.category_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="service_name" class="form-label">Service Name:</label>
+                            <input type="text" class="form-control" id="service_name" name="service_name" placeholder="Enter service name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="service_description" class="form-label">Service Description:</label>
+                            <textarea class="form-control" id="service_description" name="service_description" rows="4" placeholder="Describe the service" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="base_price" class="form-label">Base Price (₹):</label>
+                            <input type="number" class="form-control" id="base_price" name="base_price" min="0" placeholder="Enter base price" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="time_required" class="form-label">Time Required (in hours):</label>
+                            <input type="number" class="form-control" id="time_required" name="time_required" min="1" placeholder="Enter time required" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger-gradient w-100 py-2 mb-3" 
+                        style="border: 2px solid #000000; border-radius: 5px; transition: transform 0.3s ease, background-color 0.3s ease;" 
+                        onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='#ff4444';" 
+                        onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='';">
+                        <i class="fas fa-plus me-2"></i>Add Service
+                    </button>
+                    
+                    <a href="{{ url_for('admin_availableService') }}" class="btn btn-outline-secondary w-100 py-2" 
+                        style="border: 2px solid #6c757d; border-radius: 5px; transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;" 
+                        onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='#6c757d'; this.style.color='#ffffff';" 
+                        onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor=''; this.style.color='';">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </a>
+
+                    
+                        
+                        
+
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

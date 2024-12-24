@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block cont %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+<style>
+    /* General Styles */
+    .table td, .table th {
+        vertical-align: middle;
+    }
+    .table .btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .no-requests {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .no-requests img {
+        max-width: 400px; /* Adjust the size for better responsiveness */
+        margin-bottom: 10px;
+    }
+
+    /* Table Header */
+    .table-dark {
+        background: linear-gradient(90deg, #dc3545, #ff6b81);
+        color: #ffffff;
+    }
+
+    /* Buttons */
+    .btn-info {
+        color: #ffffff;
+        background-color: #17a2b8;
+        border: 2px solid #17a2b8;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+        transform: scale(1.05);
+    }
+
+    .btn-success {
+        color: #ffffff;
+        background-color: #28a745;
+        border: 2px solid #28a745;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        transform: scale(1.05);
+    }
+
+    .btn-danger {
+        color: #ffffff;
+        background-color: #dc3545;
+        border: 2px solid #dc3545;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}
+
+{% block home %}  
+<a class="navbar-brand" href="/admin_dashboard">HomeDecore Services</a> 
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('service_requests') }}">Service Requests</a>
+    </li>
+    <li>
+        <a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('search_professionals') }}">Search Professionals</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('search_customers') }}">Search Customers</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 bg-light p-4 shadow-lg rounded">
+    <h2 class="h4 text-center text-danger mb-4">Pending Professionals</h2>
+    {% if not unapproved_professionals %}
+    <div class="no-requests">
+        <img src="/static/images/Cartoon-Concept-Art-with-Housekeeping-Services-Cleaners-Character-Illustration-700.webp" alt="No Pending Requests" />
+        <p>No pending requests.</p>
+    </div>
+    {% else %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Username</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for professional in unapproved_professionals %}
+                <tr>
+                    <th scope="row">{{ professional.id }}</th>
+                    <td>{{ professional.user_name }}</td>
+                    <td class="text-center">
+                        <a href="{{ url_for('view_professional', professional_id=professional.id) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-user me-2"></i>View Profile
+                        </a>
+                        <form action="{{ url_for('approve_professional', professional_id=professional.id) }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="action" value="approve">
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="fas fa-check me-2"></i>Approve
+                            </button>
+                        </form>
+                        <form action="{{ url_for('approve_professional', professional_id=professional.id) }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="action" value="deny">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to deny this professional?');">
+                                <i class="fas fa-times me-2"></i>Deny
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

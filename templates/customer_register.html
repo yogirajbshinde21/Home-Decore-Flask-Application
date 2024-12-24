@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block remtitle %}Customer Registration{% endblock %}
+
+{% block cont %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+
+<!-- MDB -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.20.0/js/mdb.min.js">
+
+<style>
+
+    .form-background {
+        background: linear-gradient(135deg, #78ad3c, #558B2F, #5ac915, #33691E);
+        background-size: 400% 400%;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        animation: gradient-movement 15s ease-in-out infinite;
+    }
+
+    @keyframes gradient-movement {
+        0% {
+            background-position: 0% 50%;
+        }
+        25% {
+            background-position: 50% 100%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        75% {
+            background-position: 50% 0%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    #loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 1s ease;
+}
+
+#loading-screen img {
+    max-width: 100%;
+    height: auto;
+}
+
+#main-content {
+    display: none;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+  .registration-form {
+        background: url("{{ url_for('static', filename='images/green-bg.jpg') }}") no-repeat center center / cover;
+        color: #212121;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+.form-title {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 0.75rem;
+}
+
+.btn-register {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: bold;
+    border-radius: 0.75rem;
+    background: linear-gradient(135deg, #8BC34A, #558B2F);
+    color: #fff;
+    box-shadow: 0 6px 15px rgba(139, 195, 74, 0.3);
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-register:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(139, 195, 74, 0.5);
+}
+
+.login-link a {
+    font-weight: bold;
+    color: #8BC34A;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+</style>
+{% endblock %}
+
+{% set hide_toggler = True %}
+
+{% block home %}
+<a class="navbar-brand text-center w-100" href="/">HomeDecore Services</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+    <img src="{{ url_for('static', filename='images/loading-cust-g.gif') }}" alt="Loading...">
+</div>
+
+<!-- Main Content -->
+<div class="form-background">
+<div id="main-content">
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+             
+                <div class="registration-form">
+                    <h2 class="form-title">Customer Registration</h2>
+                    <form action="/customer_register" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" name="address" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="pincode" class="form-label">Pincode</label>
+                            <input type="text" class="form-control" id="pincode" name="pincode" required>
+                        </div>
+                        <button type="submit" class="btn btn-register">Register as Customer</button>
+                    </form>
+                    <div class="login-link mt-4 text-center">
+                        <p>Already have an account? <a href="/login">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        setTimeout(function() {
+            const loadingScreen = document.getElementById("loading-screen");
+            const mainContent = document.getElementById("main-content");
+
+            loadingScreen.style.opacity = "0";
+            setTimeout(() => {
+                loadingScreen.style.display = "none";
+            }, 1000);
+
+            mainContent.style.display = "block";
+            setTimeout(() => {
+                mainContent.style.opacity = "1";
+            }, 200);
+        }, 1500); // 1.5 seconds delay
+    });
+</script>
+
+{% endblock %}

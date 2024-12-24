@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block remtitle %}Service Summary{% endblock %}
+
+{% block home %}  <a class="navbar-brand" href="/customer_dashboard">HomeDecore Services</a> {% endblock %}
+
+{% block navigation %}
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('customer_dashboard') }}">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('customer_Searching') }}">Search Services</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('service_summary') }}">Summary</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4" style="color: #28a745; font-weight: bold;">Service Summary</h1>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card border-success mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="card-title mb-0">Most Used Service</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-text text-muted" style="font-size: 1.2rem;">{{ most_used_service }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card border-info mb-4">
+                <div class="card-header bg-info text-white">
+                    <h4 class="card-title mb-0">Service Request Statistics</h4>
+                </div>
+                <div class="card-body">
+                    <div>
+                        {{ graph_html|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-success text-center" role="alert" style="font-size: 1.1rem;">
+                {{ tip_message }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

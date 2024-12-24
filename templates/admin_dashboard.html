@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block remtitle %}Admin Dashboard{% endblock %}
+
+{% block cont %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block home %}
+<a class="navbar-brand" href="/admin_dashboard">HomeDecore Services</a>
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('service_requests') }}">Service Requests</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('search_professionals') }}">Manage Professionals</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('search_customers') }}">Manage Customers</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Dashboard Header -->
+    <div class="row text-white py-5" style="background: linear-gradient(to right, #dc3545, #ff6b81);">
+        <div class="col text-center">
+            <h1 class="display-4 mb-3">
+                <i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard
+            </h1>
+            <div id="datetimeDisplay" class="h5 opacity-75"></div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Section -->
+    <div class="row g-4 mt-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow card-hover">
+                <div class="card-body text-center bg-danger text-white rounded-4">
+                    <h4>
+                        <i class="fas fa-concierge-bell fa-2x mb-2"></i><br>
+                        {{ services|length }} Services
+                    </h4>
+                    <p>Manage all available services</p>
+                </div>
+                <a href="{{ url_for('admin_availableService') }}" class="stretched-link"></a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow card-hover">
+                <div class="card-body text-center bg-warning text-dark rounded-4">
+                    <h4>
+                        <i class="fas fa-user-clock fa-2x mb-2"></i><br>
+                        {{ unapproved_professionals|length }} Pending Approvals
+                    </h4>
+                    <p>Review unapproved professionals</p>
+                </div>
+                <a href="{{ url_for('pending_professionals') }}" class="stretched-link"></a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow card-hover">
+                <div class="card-body text-center bg-info text-white rounded-4">
+                    <h4>
+                        <i class="fas fa-list-alt fa-2x mb-2"></i><br>
+                        {{ total_requests }} Service Requests
+                    </h4>
+                    <p>Track all service requests</p>
+                </div>
+                <a href="{{ url_for('service_requests') }}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dynamic Date-Time -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const updateDateTime = () => {
+        const now = new Date();
+        document.getElementById('datetimeDisplay').textContent = now.toLocaleString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    };
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+});
+</script>
+
+<!-- Styling -->
+<style>
+body {
+    background-color: #f4f6f9;
+}
+
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.card-hover:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card a.stretched-link {
+    color: inherit;
+    text-decoration: none;
+}
+</style>
+{% endblock %}

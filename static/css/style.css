@@ -1,0 +1,8 @@
+.index-background {
+    background: linear-gradient(135deg, #6a11cb, #2575fc); /* Purple to blue gradient */
+    height: 100vh; /* Ensures it covers the full viewport height */
+    width: 100%; /* Ensures it spans the full width */
+}
+
+
+

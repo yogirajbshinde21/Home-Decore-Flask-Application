@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block cont %}
+
+<style>
+.search-btn {
+    border: 2px solid #000000; /* Black border */
+    border-radius: 5px;       /* Rounded corners */
+    transition: transform 0.2s, background-color 0.2s; /* Smooth hover transition */
+    width: 120px;            /* Consistent width */
+}
+
+.search-btn:hover {
+    transform: scale(1.05);         /* Slight zoom on hover */
+    background-color: #ff4d4d;      /* Brighter red on hover */
+    border-color: #ff6b81;          /* Matching hover border color */
+    color: #ffffff;                /* Ensure text stays white */
+}
+
+</style>
+
+{% endblock %}
+
+{% block home %}  <a class="navbar-brand" href="/admin_dashboard">HomeDecore Services</a> {% endblock %}
+
+{% block navigation %}
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('service_requests') }}">Service Requests</a>
+        </li>
+        <li><a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a></li>
+
+        <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('search_professionals') }}">Search Professionals</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('search_customers') }}">Search Customers</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+        
+    </ul>
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2 class="display-5 text-danger">
+            <i class="fas fa-search me-2"></i>Search Professionals
+        </h2>
+        <p class="text-muted">Find and manage professionals with ease.</p>
+    </div>
+
+    <!-- Search Form -->
+    <form method="POST" class="mb-4 position-relative">
+        <div class="input-group shadow-sm">
+            <input 
+                type="text" 
+                id="professionalSearch" 
+                name="search_query" 
+                class="form-control rounded-start" 
+                placeholder="Enter professional username" 
+                required 
+                autocomplete="off" 
+                data-professionals='{{ professionals_list|tojson }}'>
+            <button class="btn btn-danger-gradient search-btn" type="submit">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+        <div id="professionalDropdown" class="dropdown-menu" style="display: none; position: absolute; z-index: 1000; width: 100%;"></div>
+    </form>
+    
+
+    <!-- Results Section -->
+    {% if professionals %}
+    <div class="table-responsive shadow-sm">
+        <table class="table table-striped table-hover">
+            <thead class="bg-danger text-white">
+                <tr>
+                    <th>Username</th>
+                    <th>Service</th>
+                    <th>Approved</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for professional in professionals %}
+                <tr>
+                    <td>{{ professional.user_name }}</td>
+                    <td>{{ professional.service.service_name }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if professional.is_approved else 'danger' }}">
+                            {{ 'Yes' if professional.is_approved else 'No' }}
+                        </span>
+                    </td>
+                    <td>
+                        <!-- View Profile Button -->
+                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#profileModal{{ professional.id }}">
+                            <i class="fas fa-user-circle me-1"></i> View
+                        </button>
+
+                        <!-- Approve/Block Button -->
+                        {% if professional.is_approved %}
+                        <form method="POST" action="{{ url_for('block_professional', professional_id=professional.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-ban me-1"></i> Block
+                            </button>
+                        </form>
+                        {% else %}
+                        <form method="POST" action="{{ url_for('unblock_professional', professional_id=professional.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="fas fa-check-circle me-1"></i> Unblock
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        <!-- Delete Button -->
+                        <form method="POST" action="{{ url_for('delete_professional', professional_id=professional.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-warning btn-sm">
+                                <i class="fas fa-trash-alt me-1"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <!-- Modal -->
+                <div class="modal fade" id="profileModal{{ professional.id }}" tabindex="-1" aria-labelledby="profileModalLabel{{ professional.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title" id="profileModalLabel{{ professional.id }}">
+                                    <i class="fas fa-user me-2"></i> Profile of {{ professional.user_name }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Address:</strong> {{ professional.address }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Pincode:</strong> {{ professional.pincode }}</p>
+                                    </div>
+                                </div>
+                                <p><strong>Average Rating:</strong> {{ professional.avg_rating }}</p>
+                                <p><strong>Rating Count:</strong> {{ professional.rating_count }}</p>
+                                <p><strong>Experience:</strong> {{ professional.prof_experience }}</p>
+                                <h6 class="mt-3">Services Completed:</h6>
+                                <ul class="list-group">
+                                    {% for service in professional.completed_services() %}
+                                    <li class="list-group-item">
+                                        <strong>Service:</strong> {{ service.service.service_name }} <br>
+                                        <strong>Date Completed:</strong> {{ service.date_created }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No professionals found.</p>
+    {% endif %}
+</div>
+
+<script>
+    // JavaScript for live search dropdown
+    document.addEventListener('DOMContentLoaded', function () {
+        const professionals = JSON.parse(document.getElementById('professionalSearch').dataset.professionals);
+        const searchInput = document.getElementById('professionalSearch');
+        const dropdown = document.getElementById('professionalDropdown');
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+            dropdown.innerHTML = ''; 
+            dropdown.style.display = 'none';
+
+            if (query) {
+                const filteredProfessionals = professionals.filter(professional => professional.user_name.toLowerCase().includes(query));
+                filteredProfessionals.forEach(professional => {
+                    const item = document.createElement('a');
+                    item.className = 'dropdown-item';
+                    item.href = '#';
+                    item.textContent = professional.user_name;
+                    item.onclick = function () {
+                        searchInput.value = professional.user_name;
+                        dropdown.style.display = 'none';
+                    };
+                    dropdown.appendChild(item);
+                });
+                if (filteredProfessionals.length) {
+                    dropdown.style.display = 'block';
+                }
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!dropdown.contains(e.target) && e.target !== searchInput) {
+                dropdown.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+{% endblock %}

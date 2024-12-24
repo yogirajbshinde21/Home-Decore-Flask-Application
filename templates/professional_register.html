@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block remtitle %}Professional Registration{% endblock %}
+
+{% block cont %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+
+<!-- MDB -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.20.0/js/mdb.min.js">
+{% endblock %}
+
+{% set hide_toggler = True %}
+
+{% block home %}  
+<a class="navbar-brand text-center w-100" href="/">HomeDecore Services</a> 
+{% endblock %}
+
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #FF7043, #FFCC80); /* Initial gradient */
+        background-size: 200% 200%; /* Ensures smooth animation */
+        animation: gradientAnimation 6s ease infinite; /* Animation properties */
+        min-height: 100vh;
+        margin: 0;
+        color: #212121;
+    }
+
+    @keyframes gradientAnimation {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .form-container {
+        position: relative; /* Parent for absolutely positioned child elements */
+    }
+
+    .registration-form {
+        position: relative;
+        color: #212121;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        overflow: hidden; /* Ensures the pseudo-element doesn't overflow */
+        background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    }
+
+    .registration-form::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("{{ url_for('static', filename='images/orange-bg.jpg') }}") no-repeat center center / cover;
+        opacity: 0.5; /* Adjust the transparency here */
+        z-index: -1; /* Ensures it stays behind the form content */
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+</style>
+
+
+
+<!-- Loading Screen -->
+<div id="loading-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 1; transition: opacity 1s ease;">
+    <img src="{{ url_for('static', filename='images/loading-prof.gif') }}" alt="Loading..." style="max-width: 100%; height: auto;">
+</div>
+
+<!-- Main Content -->
+<div id="main-content" style="display: none; opacity: 0; transition: opacity 1s ease;">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 form-container">
+                <!-- Sun Background Animation -->
+                <!-- <img src="{{ url_for('static', filename='images/sun-bg.gif') }}" alt="Sun Background" class="sun-bg"> -->
+                
+                <!-- Registration Form -->
+                <div class="registration-form">
+                    <h2 class="fw-bold mb-4 text-center">Register as a Professional</h2>
+                    <form action="/professional_register" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control border-0 shadow-sm" id="username" name="username" required style="border-radius: 12px;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control border-0 shadow-sm" id="password" name="password" required style="border-radius: 12px;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control border-0 shadow-sm" id="address" name="address" required style="border-radius: 12px;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="pincode" class="form-label">Pincode</label>
+                            <input type="number" class="form-control border-0 shadow-sm" id="pincode" name="pincode" style="border-radius: 12px;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="service" class="form-label">Select Service</label>
+                            <select class="form-select border-0 shadow-sm" id="service" name="service" required style="border-radius: 12px;">
+                                <option value="" disabled selected>Select a service</option>
+                                {% for service in services %}
+                                    <option value="{{ service.service_name }}">{{ service.service_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="prof_experience" class="form-label">Professional Experience</label>
+                            <textarea class="form-control border-0 shadow-sm" id="prof_experience" name="prof_experience" rows="3" required style="border-radius: 12px;"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="prof_file" class="form-label">Upload Professional Document (PDF)</label>
+                            <input type="file" class="form-control border-0 shadow-sm" id="prof_file" name="prof_file" accept=".pdf" required style="border-radius: 12px;">
+                        </div>
+                        <button type="submit" class="btn w-100 fw-bold" style="background: #FF7043; color: #ffffff; border-radius: 12px;">Register</button>
+                    </form>
+
+                    <div class="mt-4 text-center">
+                        <p class="text-white-50 mb-1" style="color: #212121 !important;">Already have an account?</p>
+                        <a href="/login" class="text-decoration-none fw-bold" style="color: #FF7043;">Login Here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Wait for the page to fully load
+    document.addEventListener("DOMContentLoaded", function() {
+        // Hide the loading screen and fade in the content after 4 seconds
+        setTimeout(function() {
+            const loadingScreen = document.getElementById("loading-screen");
+            const mainContent = document.getElementById("main-content");
+
+            // Fade out the loading screen
+            loadingScreen.style.opacity = "0";
+            setTimeout(() => {
+                loadingScreen.style.display = "none";
+            }, 1000); // Match the transition duration
+
+            // Fade in the main content
+            mainContent.style.display = "block";
+            setTimeout(() => {
+                mainContent.style.opacity = "1";
+            }, 200); // Allow main content to display before fading in
+        }, 2000); // 4000ms = 4 seconds
+    });
+</script>
+
+{% endblock %}

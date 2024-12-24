@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block remtitle %}Professional Dashboard{% endblock %}
+
+{% block home %}  
+<a class="navbar-brand" href="/professional_dashboard">HomeDecore Services</a> 
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('professional_dashboard') }}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('professional_summary') }}">Summary</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('professional_ratings') }}">Your Ratings</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block cont %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+    .container {
+        margin-top: 2rem;
+        font-family: 'Arial', sans-serif;
+    }
+
+    h2 {
+        color: #FF7043;
+        margin-bottom: 1rem;
+    }
+
+    .field-box {
+        border: 2px solid #FF7043;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #FFF3E0;
+    }
+
+    .collapsible {
+        background: linear-gradient(90deg, #FF7043, #FFCC80);
+        color: white;
+        cursor: pointer;
+        padding: 10px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        font-size: 16px;
+        transition: background-color 0.4s, transform 0.3s;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .collapsible:hover, .collapsible.active {
+        background-color: #FF5722;
+        transform: scale(1.02);
+    }
+
+    .content {
+        padding: 0 18px;
+        max-height: 0;
+        overflow: hidden;
+        background-color: white;
+        border: 1px solid #FF7043;
+        border-radius: 5px;
+        margin-top: 10px;
+        transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+    }
+
+    .btn-service {
+        background-color: #FF7043;
+        color: white;
+        border: 2px solid #FF7043;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+
+    .btn-service:hover {
+        background-color: #E64A19;
+        transform: scale(1.05);
+    }
+
+    .no-requests {
+        text-align: center;
+        color: #999;
+        font-style: italic;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="color:#FF7043;">Welcome, {{ professional.user_name }}!</h1>
+    <br>
+
+    <!-- Pending Requests Section -->
+    <div class="field-box">
+        <h2>Pending Requests</h2>
+        {% if pending_reqsts %}
+            {% for request in pending_reqsts %}
+                <button class="collapsible">{{ request.customer.user_name }} - {{ request.service.service_name }}
+                    <i class="fas fa-chevron-down" style="float: right;"></i>
+                </button>
+                <div class="content">
+                    <p><strong>Address:</strong> {{ request.customer.address }}</p>
+                    <p><strong>Pincode:</strong> {{ request.customer.pincode }}</p>
+                    <p><strong>Description:</strong> {{ request.request_description }}</p>
+                    <div>
+                        <form action="{{ url_for('handle_request', request_id=request.id) }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="action" value="accept">
+                            <button type="submit" class="btn-service">Accept</button>
+                        </form>
+                        <form action="{{ url_for('handle_request', request_id=request.id) }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="action" value="reject">
+                            <button type="submit" class="btn-service">Reject</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-requests">No pending requests.</p>
+        {% endif %}
+    </div>
+
+    <!-- Accepted Requests Section -->
+    <div class="field-box">
+        <h2>Accepted Requests</h2>
+        {% if accepted_reqsts %}
+            {% for request in accepted_reqsts %}
+                <button class="collapsible">{{ request.customer.user_name }} - {{ request.service.service_name }}
+                    <i class="fas fa-chevron-down" style="float: right;"></i>
+                </button>
+                <div class="content">
+                    <p><strong>Address:</strong> {{ request.customer.address }}</p>
+                    <p><strong>Pincode:</strong> {{ request.customer.pincode }}</p>
+                    <p><strong>Description:</strong> {{ request.request_description }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-requests">No accepted requests.</p>
+        {% endif %}
+    </div>
+
+    <!-- Completed Requests Section -->
+    <div class="field-box">
+        <h2>Completed Requests</h2>
+        {% if completed_reqsts %}
+            {% for request in completed_reqsts %}
+                <button class="collapsible">{{ request.customer.user_name }} - {{ request.service.service_name }}
+                    <i class="fas fa-chevron-down" style="float: right;"></i>
+                </button>
+                <div class="content">
+                    <p><strong>Address:</strong> {{ request.customer.address }}</p>
+                    <p><strong>Pincode:</strong> {{ request.customer.pincode }}</p>
+                    <p><strong>Description:</strong> {{ request.request_description }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-requests">No completed requests.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const collapsibles = document.getElementsByClassName("collapsible");
+    for (let i = 0; i < collapsibles.length; i++) {
+        collapsibles[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            const content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

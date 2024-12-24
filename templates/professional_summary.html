@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block remtitle %}Professional Summary{% endblock %}
+
+{% block cont %}
+<style>
+    .summary-container {
+        margin-top: 2rem;
+        font-family: 'Arial', sans-serif;
+        color: #333;
+    }
+
+    .summary-card {
+        background: linear-gradient(135deg, #FF7043, #FFCC80);
+        color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .summary-card h2 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .summary-card p {
+        font-size: 1.5rem;
+    }
+
+    .alert {
+        background-color: #FFF3E0;
+        border-left: 5px solid #FF9800;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .chart-card {
+        background-color: #fff;
+        border: 1px solid #ffcc80;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .chart-card h2 {
+        color: #FF7043;
+        text-align: center;
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block home %}
+<a class="navbar-brand" href="/professional_dashboard">HomeDecore Services</a>
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('professional_dashboard') }}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('professional_summary') }}">Summary</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('professional_ratings') }}">Your Ratings</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container summary-container">
+    <h1 class="text-center" style="color:#FF7043;">Summary for {{ professional.user_name }}</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="summary-card">
+                <h2>Average Rating</h2>
+                <p>{{ average_rating | round(2) }}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="summary-card">
+                <h2>Services Completed</h2>
+                <p>{{ professional_service_count }}</p>
+                <p style="font-size: 1rem; color: #fff9f2;">
+                    The average number of services completed by others is 
+                    <strong>{{ average_services_by_others | round(2) }}</strong>.
+                </p>
+                {% if professional_service_count > 0 %}
+                    {% if professional_service_count > average_services_by_others %}
+                        <p class="text-light">Good News: You're completing {{ (professional_service_count / average_services_by_others)|round(2) }}x more services!</p>
+                    {% else %}
+                        <p class="text-light">Work harder! You're completing {{ (average_services_by_others / professional_service_count)|round(2) }}x fewer services.</p>
+                    {% endif %}
+                {% else %}
+                    <p class="text-warning">No services completed yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-success mt-4" role="alert">
+        <p>{{ tip_message }}</p>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h2>Services Provided</h2>
+                <div>{{ chart1 | safe }}</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h2>Rating Distribution</h2>
+                {% if average_rating == 0 %}
+                    <p class="text-secondary text-center">Not enough data to show.</p>
+                {% else %}
+                    <div>{{ chart2 | safe }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

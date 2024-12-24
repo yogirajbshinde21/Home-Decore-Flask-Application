@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block remtitle %}Service Requests{% endblock %}
+
+
+{% block cont %}
+<!-- Page Styles -->
+<style>
+    .header-bg {
+        background: linear-gradient(to right, #dc3545, #ff6b81);
+        color: white;
+    }
+
+    .card-header {
+        background: linear-gradient(to right, #dc3545, #ff6b81);
+        color: white;
+        font-weight: bold;
+    }
+
+    .btn-outline-light:hover {
+        background: #ffffff;
+        color: #dc3545;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    .badge {
+    font-size: 0.85rem;
+}
+
+.badge-pending {
+    background-color: #ffc107;
+    color: black;
+}
+
+.badge-completed {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-cancelled {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-rejected {
+    background-color: #dc3545; /* Red color for rejected */
+    color: white;
+}
+
+    .modal-content {
+        border-radius: 8px;
+        box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background: linear-gradient(to right, #dc3545, #ff6b81);
+        color: white;
+    }
+
+    .btn-close {
+        color: white;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block home %}
+<a class="navbar-brand" href="/admin_dashboard">HomeDecore Services</a>
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}">Home</a></li>
+    <li class="nav-item"><a class="nav-link active" href="{{ url_for('service_requests') }}">Service Requests</a></li>
+    <li><a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('search_professionals') }}">Search Professionals</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('search_customers') }}">Search Customers</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container-fluid bg-light">
+    <!-- Header Section -->
+    <div class="row header-bg py-4 mb-4 shadow-sm">
+        <div class="col-12 text-center">
+            <h1 class="display-4 mb-3">
+                <i class="fas fa-list-alt me-3"></i>Service Requests Tracking
+            </h1>
+            <p class="lead">View and manage all service requests in one place.</p>
+        </div>
+    </div>
+
+    <!-- Service Requests Table -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-lg">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Service Requests Overview</h3>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-light">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </a>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Customer Name</th>
+                                <th>Professional Name</th>
+                                <th>Service Name</th>
+                                <th>Status</th>
+                                <th>Date Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for request in requests %}
+                            <tr>
+                                <td>{{ request.id }}</td>
+                                <td>{{ request.customer.user_name }}</td>
+                                <td>{{ request.professional.user_name if request.professional else 'N/A' }}</td>
+                                <td>{{ request.service.service_name }}</td>
+                                <td>
+                                    <span class="badge badge-{% if request.status_of_serviceRequest == 'Rejected' %}rejected{% else %}{{ request.status_of_serviceRequest|lower }}{% endif %}">
+                                        {{ request.status_of_serviceRequest }}
+                                    </span>
+                                </td>
+                                <td>{{ request.date_created }}</td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#viewRequestModal{{ request.id }}">
+                                        View Details
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- View Request Modal -->
+                            <div class="modal fade" id="viewRequestModal{{ request.id }}" tabindex="-1" aria-labelledby="viewRequestModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="viewRequestModalLabel">Service Request Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Request ID:</strong> {{ request.id }}</p>
+                                            <p><strong>Customer Name:</strong> {{ request.customer.user_name }}</p>
+                                            <p><strong>Professional Name:</strong> {{ request.professional.user_name if request.professional else 'N/A' }}</p>
+                                            <p><strong>Service Name:</strong> {{ request.service.service_name }}</p>
+                                            <p><strong>Description:</strong> {{ request.request_description }}</p>
+                                            <p><strong>Status:</strong> {{ request.status_of_serviceRequest }}</p>
+                                            <p><strong>Date Created:</strong> {{ request.date_created }}</p>
+                                            <p><strong>Date Closed:</strong> {{ request.date_closed if request.date_closed else 'N/A' }}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block remtitle %}Search Services{% endblock %}
+
+{% block home %}  <a class="navbar-brand" href="/customer_dashboard">HomeDecore Services</a> {% endblock %}
+
+{% block navigation %}
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('customer_dashboard') }}">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('customer_Searching') }}">Search Services</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('service_summary') }}">Summary</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block cont %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+    /* General Styling */
+    body {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+    }
+    
+    /* Container for Search */
+    .search-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        border: 2px solid #28a745;
+    }
+    
+    /* Search Header */
+    .search-container h2 {
+        color: #28a745;
+        font-weight: bold;
+    }
+    
+    /* Form Labels */
+    .form-label {
+        font-weight: bold;
+        color: #28a745;
+    }
+    
+    /* Input and Select Fields */
+    .form-control,
+    .form-select {
+        border: 2px solid #28a745;
+        border-radius: 5px;
+        transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #218838;
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+    }
+    
+    /* Search Button */
+    .btn-primary {
+        background-color: #28a745;
+        border: 2px solid #218838;
+        color: white;
+        font-size: 1rem;
+        font-weight: bold;
+        padding: 0.75rem;
+        border-radius: 5px;
+        transition: all 0.3s ease-in-out;
+    }
+    
+    .btn-primary:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+        transform: scale(1.05);
+    }
+    
+    /* Clear Button */
+    .btn-secondary {
+        background-color: #6c757d;
+        border: 2px solid #6c757d;
+        color: white;
+        transition: all 0.3s ease-in-out;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #565e64;
+        border-color: #494f54;
+        transform: scale(1.05);
+    }
+    
+    /* Table Styling */
+    .table {
+        margin-top: 20px;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+    
+    .table thead {
+        background-color: #28a745;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+    
+    /* Rating Stars */
+    .text-warning i {
+        color: #ffc107;
+    }
+    
+    /* Suggestions Dropdown */
+    .suggestions {
+        border: 2px solid #28a745;
+        background: #ffffff;
+        position: absolute;
+        z-index: 1000;
+        width: calc(100% - 20px);
+        max-height: 200px;
+        overflow-y: auto;
+        border-radius: 5px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        display: none;
+    }
+    
+    .suggestion-item {
+        padding: 10px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        color: #333;
+        transition: background-color 0.2s ease-in-out;
+    }
+    
+    .suggestion-item:hover {
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+    
+    /* Modal Styling */
+    .modal-content {
+        border-radius: 10px;
+        border: 2px solid #28a745;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modal-header {
+        background-color: #28a745;
+        color: white;
+        font-weight: bold;
+        border-radius: 10px 10px 0 0;
+    }
+    
+    .modal-footer {
+        border-top: 2px solid #28a745;
+    }
+    
+    .modal-footer .btn {
+        border-radius: 5px;
+        transition: all 0.3s ease-in-out;
+    }
+    
+    /* Buttons in Modal */
+    .modal-footer .btn-secondary:hover {
+        background-color: #565e64;
+        border-color: #494f54;
+    }
+    
+    .modal-footer .btn-primary {
+        background-color: #28a745;
+        border-color: #218838;
+    }
+    
+    .modal-footer .btn-primary:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+        transform: scale(1.05);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .btn-primary,
+        .btn-secondary {
+            font-size: 0.9rem;
+            padding: 0.5rem;
+        }
+    }
+    </style>
+    
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="search-container mb-4">
+        <h2 class="mb-4"><i class="fas fa-search me-2"></i>Search Services</h2>
+        
+        <form action="{{ url_for('customer_Searching') }}" method="GET" class="mb-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="searchType" class="form-label">Search By</label>
+                    <select class="form-select" id="searchType" name="search_type" required>
+                        <option value="" selected disabled>Select search type</option>
+                        <option value="pincode" {% if search_type == 'pincode' %}selected{% endif %}>Pincode</option>
+                        <option value="service" {% if search_type == 'service' %}selected{% endif %}>Service Name</option>
+                        <option value="address" {% if search_type == 'address' %}selected{% endif %}>Address</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="searchQuery" class="form-label">Search</label>
+                    <div class="position-relative">
+                        <input type="text" class="form-control" id="searchQuery" name="query" 
+                               placeholder="Enter your search term" value="{{ query if query }}" required>
+                        <i class="fas fa-search search-icon"></i>
+                        <div id="suggestions" class="suggestions"></div>
+                    </div>
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="col-md-2">
+            <label class="form-label">&nbsp;</label>
+            <a href="{{ url_for('customer_Searching') }}" class="btn btn-secondary w-100">
+                <i class="fas fa-undo me-2"></i>Clear
+            </a>
+        </div>
+
+        {% if results %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Service Name</th>
+                        <th>Description</th>
+                        <th>Base Price</th>
+                        <th>Time Required</th>
+                        <th>Professional Name</th>
+                        <th>Rating</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.service.service_name }}</td>
+                        <td>{{ result.service.service_description }}</td>
+                        <td>₹{{ result.service.base_price }}</td>
+                        <td>{{ result.service.time_required }} hours</td>
+                        <td>{{ result.user_name }}</td>
+                        <td>
+                            <div class="text-warning">
+                                {% for i in range(result.avg_rating|int) %}
+                                    <i class="fas fa-star"></i>
+                                {% endfor %}
+                                {% if result.avg_rating % 1 >= 0.5 %}
+                                    <i class="fas fa-star-half-alt"></i>
+                                {% endif %}
+                                ({{ "%.1f"|format(result.avg_rating) }})
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-info btn-sm" data-bs-toggle="modal" 
+                                    data-bs-target="#profileModal{{ result.id }}">
+                                <i class="fas fa-user me-1"></i>View Profile
+                            </button>
+                        </td>
+                    </tr>
+
+                   <!-- Professional Profile Modal -->
+<div class="modal fade" id="profileModal{{ result.id }}" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Professional Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Name</h6>
+                        <p>{{ result.user_name }}</p>
+                        <h6>Address</h6>
+                        <p>{{ result.address }}</p>
+                        <h6>Pincode</h6>
+                        <p>{{ result.pincode }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Service</h6>
+                        <p>{{ result.service.service_name }}</p>
+                        <h6>Experience</h6>
+                        <p>{{ result.prof_experience }}</p>
+                        <h6>Average Rating</h6>
+                        <p class="text-warning">
+                            {% for i in range(result.avg_rating|int) %}
+                                <i class="fas fa-star"></i>
+                            {% endfor %}
+                            {% if result.avg_rating % 1 >= 0.5 %}
+                                <i class="fas fa-star-half-alt"></i>
+                            {% endif %}
+                            ({{ "%.1f"|format(result.avg_rating) }})
+                        </p>
+                    </div>
+                </div>
+                {% if result.prof_file %}
+                <div class="mt-3">
+                    <h6>Professional Documents</h6>
+                    <a href="{{ url_for('static', filename='pdfs/' + result.prof_file) }}" 
+                       class="btn btn-outline-primary btn-sm" target="_blank">
+                        <i class="fas fa-file-pdf me-1"></i>View Documents
+                    </a>
+                </div>
+                {% endif %}
+                <div class="mt-4">
+                    <a href="{{ url_for('request_service', service_id=result.service.id, professional_id=result.id) }}" 
+                       class="btn btn-primary">
+                        <i class="fas fa-handshake me-1"></i>Request Service
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% elif query %}
+        <div class="alert alert-info mt-4">
+            <i class="fas fa-info-circle me-2"></i>No results found for your search.
+        </div> 
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchType = document.getElementById('searchType');
+        const searchQuery = document.getElementById('searchQuery');
+        const suggestionsContainer = document.getElementById('suggestions');
+
+        searchQuery.addEventListener('input', function() {
+            const query = this.value;
+            const selectedType = searchType.value;
+
+            if (query.length > 0 && selectedType) {
+                fetch(`/search_suggestions?search_type=${selectedType}&query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestionsContainer.innerHTML = '';
+                        if (data.length > 0) {
+                            suggestionsContainer.style.display = 'block';
+                            data.forEach(item => {
+                                const suggestionItem = document.createElement('div');
+                                suggestionItem.className = 'suggestion-item';
+                                suggestionItem.textContent = item;
+                                suggestionItem.onclick = function() {
+                                    searchQuery.value = item;
+                                    suggestionsContainer.innerHTML = '';
+                                    suggestionsContainer.style.display = 'none';
+                                };
+                                suggestionsContainer.appendChild(suggestionItem);
+                            });
+                        } else {
+                            suggestionsContainer.style.display = 'none';
+                        }
+                    });
+            } else {
+                suggestionsContainer.innerHTML = '';
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+
+        searchType.addEventListener('change', function() {
+            searchQuery.value = '';
+            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.style.display = 'none';
+        });
+    });
+</script>
+{% endblock %}

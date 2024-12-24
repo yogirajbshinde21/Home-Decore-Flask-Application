@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block remtitle %}Request Service{% endblock %}
+
+
+{% block cont %}
+<style>
+/* General Container Styling */
+.container {
+    margin-top: 2rem;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 10px;
+    border: 1px solid #28a745;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Header Styling */
+.card-header {
+    background: linear-gradient(90deg, #28a745, #81c784);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    padding: 1rem;
+}
+
+/* Form Labels */
+.form-label {
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Form Inputs and Select */
+.form-control,
+.form-select {
+    border: 2px solid #28a745;
+    border-radius: 5px;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #218838;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: #28a745;
+    border: 2px solid #218838;
+    color: white;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: scale(1.05);
+}
+
+/* Dropdown Options */
+.form-select option {
+    background-color: #ffffff;
+    color: #333;
+}
+
+/* Card Body Padding */
+.card-body {
+    padding: 2rem;
+}
+
+/* Additional Customizations */
+textarea {
+    resize: none;
+    font-size: 1rem;
+}
+
+.row {
+    justify-content: center;
+}
+
+.shadow {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+</style>
+
+
+{% endblock %}
+
+
+{% block home %}  <a class="navbar-brand" href="/customer_dashboard">HomeDecore Services</a> {% endblock %}
+
+{% block navigation %}
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('customer_dashboard') }}">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('customer_Searching') }}">Search Services</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('service_summary') }}">Summary</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Request Service</h2>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('request_service', service_id=service.id) }}" method="post">
+                        <div class="mb-3">
+                            <label for="serviceName" class="form-label">Service Name</label>
+                            <input type="text" class="form-control" id="serviceName" value="{{ service.service_name }}" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="professional" class="form-label">Select Professional</label>
+                            <select class="form-select" id="professional" name="professional_name" required>
+                                <option value="" selected disabled>Choose a professional</option>
+                                {% for professional in professionals %}
+                                    <option value="{{ professional.user_name }}">{{ professional.user_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description of Your Request</label>
+                            <textarea class="form-control" id="description" name="prof_description" rows="4" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

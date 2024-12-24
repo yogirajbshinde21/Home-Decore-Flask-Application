@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block remtitle %}Admin Summary{% endblock %}
+
+{% block cont %}
+
+<!-- Page Styles -->
+<style>
+    .header-bg {
+        background: linear-gradient(to right, #dc3545, #ff6b81);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background: linear-gradient(to right, #dc3545, #ff6b81);
+        color: white;
+        font-weight: bold;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .nav-tabs .nav-link.active {
+        background: #ff6b81;
+        color: white;
+        border-radius: 8px;
+    }
+
+    .text-primary {
+        color: #dc3545 !important;
+    }
+
+    hr {
+        border: 1px solid #ff6b81;
+    }
+
+    .chart-container {
+        min-height: 300px;
+    }
+</style>
+
+{% endblock %}
+{% block home %}
+<a class="navbar-brand" href="/admin_dashboard">HomeDecore Services</a>
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('service_requests') }}">Service Requests</a>
+    </li>
+    <li>
+        <a class="nav-link active" href="{{ url_for('admin_summary') }}">Summary</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('search_professionals') }}">Search Professionals</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('search_customers') }}">Search Customers</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="text-center header-bg shadow-sm">
+        <h1 class="display-4">Admin Dashboard Summary</h1>
+        <p class="lead">Get insights into the platform's performance and activities.</p>
+    </div>
+    <hr class="my-4">
+
+    <!-- Charts Section -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2 class="text-primary">Request Status Distribution</h2>
+            <div class="card">
+                <div class="card-body chart-container">
+                    {{ chart1|safe }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2 class="text-primary">User Roles Distribution</h2>
+            <div class="card">
+                <div class="card-body chart-container">
+                    {{ chart2|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Statistics Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 class="text-primary">Summary Statistics</h2>
+            <div class="card">
+                <div class="card-header text-white bg-primary">
+                    <strong>Overview</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="card-text"><strong>Total Service Requests:</strong> {{ total_requests }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="card-text"><strong>Total Professionals:</strong> {{ total_professionals }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="card-text"><strong>Total Customers:</strong> {{ total_customers }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="card-text"><strong>Total Categories:</strong> {{ total_categories }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

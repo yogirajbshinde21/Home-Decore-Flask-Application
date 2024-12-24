@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block remtitle %}View Professional Profile{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <!-- Navbar items remain unchanged -->
+</ul>
+{% endblock %}
+
+{% block cont %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+
+<style>
+    /* Styling for the details section */
+    .details-container {
+        background: #f8f9fa;
+        border-radius: 12px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    .details-heading {
+        text-align: center;
+        font-family: 'Sofia', sans-serif;
+        color: #dc3545;
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 2rem;
+    }
+
+    .details-card {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .details-card i {
+        font-size: 1.5rem;
+        color: #dc3545;
+    }
+
+    .details-content {
+        font-size: 1rem;
+        color: #343a40;
+        line-height: 1.5;
+    }
+
+    .details-content span {
+        font-weight: bold;
+        color: #495057;
+    }
+
+    /* Two-column layout for larger screens */
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    /* Styling for buttons */
+    .actions-container {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .actions-container button,
+    .actions-container a {
+        font-size: 1rem;
+        padding: 0.8rem 1.2rem;
+        border-radius: 12px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .actions-container button i,
+    .actions-container a i {
+        margin-right: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="details-container">
+                <h2 class="details-heading">
+                    <i class="fas fa-user-tie me-2"></i> Professional Profile
+                </h2>
+
+                <div class="details-grid">
+                    <!-- Username -->
+                    <div class="details-card">
+                        <i class="fas fa-user"></i>
+                        <div class="details-content">
+                            <span>Username:</span> {{ professional.user_name }}
+                        </div>
+                    </div>
+                    <!-- Address -->
+                    <div class="details-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="details-content">
+                            <span>Address:</span> {{ professional.address }}
+                        </div>
+                    </div>
+                    <!-- Pincode -->
+                    <div class="details-card">
+                        <i class="fas fa-map-pin"></i>
+                        <div class="details-content">
+                            <span>Pincode:</span> {{ professional.pincode }}
+                        </div>
+                    </div>
+                    <!-- Selected Service -->
+                    <div class="details-card">
+                        <i class="fas fa-briefcase"></i>
+                        <div class="details-content">
+                            <span>Service:</span> {{ professional.service.service_name }}
+                        </div>
+                    </div>
+                    <!-- Experience -->
+                    <div class="details-card">
+                        <i class="fas fa-cogs"></i>
+                        <div class="details-content">
+                            <span>Experience:</span> {{ professional.prof_experience }}
+                        </div>
+                    </div>
+                    <!-- Document -->
+                    <div class="details-card">
+                        <i class="fas fa-file-alt"></i>
+                        <div class="details-content">
+                            <span>Uploaded Document:</span>
+                            <a href="{{ url_for('static', filename='pdfs/' + professional.prof_file) }}" class="btn btn-link">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions-container">
+                    <form action="{{ url_for('approve_professional', professional_id=professional.id) }}" method="POST" style="display: inline-block;">
+                        <input type="hidden" name="action" value="approve">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check-circle"></i> Approve
+                        </button>
+                    </form>
+                    <form action="{{ url_for('approve_professional', professional_id=professional.id) }}" method="POST" style="display: inline-block;">
+                        <input type="hidden" name="action" value="deny">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to deny this professional?');">
+                            <i class="fas fa-times-circle"></i> Deny
+                        </button>
+                    </form>
+                    <a href="{{ url_for('pending_professionals') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

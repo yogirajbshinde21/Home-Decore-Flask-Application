@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block remtitle %}Professional Ratings{% endblock %}
+
+
+{% block cont %}
+<style>
+    .ratings-container {
+        margin-top: 2rem;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .ratings-header {
+        color: #FF7043;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .alert-info {
+        background-color: #FFF3E0;
+        border-left: 5px solid #FF9800;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .rating-card {
+        background: linear-gradient(135deg, #FF7043, #FFCC80);
+        color: white;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .rating-card h5 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .rating-card p {
+        font-size: 1rem;
+        margin: 5px 0;
+    }
+
+    .rating-card small {
+        font-size: 0.9rem;
+        color: #fff9f2;
+    }
+
+    .empty-feedback-alert {
+        background-color: #FFE0B2;
+        border-left: 5px solid #FF7043;
+        color: #333;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+{% block home %}
+<a class="navbar-brand" href="/professional_dashboard">HomeDecore Services</a>
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('professional_dashboard') }}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('professional_summary') }}">Summary</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('professional_ratings') }}">Your Ratings</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container ratings-container">
+    <h2 class="ratings-header">Your Ratings and Feedback</h2>
+
+    <div class="alert alert-info text-center">
+        <h4>Average Rating: {{ average_rating | round(2) }} / 5</h4>
+        {% if average_rating >= 4 %}
+            <p>Great job! Keep up the excellent work.</p>
+        {% elif average_rating >= 3 %}
+            <p>Good work! Consider seeking feedback to improve your services.</p>
+        {% else %}
+            <p>There’s room for improvement. Please review customer feedback and consider adjustments to your service.</p>
+        {% endif %}
+    </div>
+
+    {% if ratings %}
+        <div class="row justify-content-center">
+            {% for rating in ratings %}
+                <div class="col-md-6">
+                    <div class="rating-card">
+                        <h5>{{ rating.service.service_name }}</h5>
+                        <p><strong>Rating:</strong> {{ rating.rating_by_The_customer }} / 5</p>
+                        <p><strong>Feedback:</strong> {{ rating.review_by_The_customer }}</p>
+                        <p><small>Completed on: {{ rating.date_closed }}</small></p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert empty-feedback-alert text-center" role="alert">
+            No reviews or feedback given.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

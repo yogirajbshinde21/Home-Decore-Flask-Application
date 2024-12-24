@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block cont %}
+<style>
+.search-btn {
+    border: 2px solid #000000; /* Black border */
+    border-radius: 5px;       /* Rounded corners */
+    transition: transform 0.2s, background-color 0.2s; /* Smooth hover transition */
+    width: 120px;            /* Consistent width */
+}
+
+.search-btn:hover {
+    transform: scale(1.05);         /* Slight zoom on hover */
+    background-color: #ff4d4d;      /* Brighter red on hover */
+    border-color: #ff6b81;          /* Matching hover border color */
+    color: #ffffff;                /* Ensure text stays white */
+}
+
+/* Styling for Yes (green) and No (red) */
+.status-yes {
+    color: #28a745; /* Green for Yes */
+    font-weight: bold;
+}
+
+.status-no {
+    color: #dc3545; /* Red for No */
+    font-weight: bold;
+}
+</style>
+{% endblock %}
+
+{% block home %}  
+<a class="navbar-brand" href="/admin_dashboard">HomeDecore Services</a> 
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('service_requests') }}">Service Requests</a>
+    </li>
+    <li><a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a></li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('search_professionals') }}">Search Professionals</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('search_customers') }}">Search Customers</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Search Customers</h2>
+    <form method="POST" class="mb-4 position-relative">
+        <div class="input-group shadow-sm">
+            <input 
+                type="text" 
+                id="customerSearch" 
+                name="search_query" 
+                class="form-control rounded-start" 
+                placeholder="Enter customer username" 
+                required 
+                autocomplete="off" 
+                data-customers='{{ customers_list|tojson }}'>
+            <button class="btn btn-danger-gradient search-btn" type="submit">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+        <div id="customerDropdown" class="dropdown-menu" style="display: none; position: absolute; z-index: 1000; width: 100%;"></div>
+    </form>
+
+    {% if customers %}
+        <h4 class="text-center mb-4">Search Results:</h4>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Approved</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                        <tr>
+                            <td>{{ customer.user_name }}</td>
+                            <td>
+                                <span class="badge {{ 'bg-success' if customer.is_approved else 'bg-danger' }}">
+                                    {{ 'Yes' if customer.is_approved else 'No' }}
+                                </span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#profileModal{{ customer.id }}">
+                                    View Profile
+                                </button>
+                                {% if customer.is_approved %}
+                                    <form method="POST" action="{{ url_for('block_customer', customer_id=customer.id) }}" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger">Block</button>
+                                    </form>
+                                {% else %}
+                                    <form method="POST" action="{{ url_for('unblock_customer', customer_id=customer.id) }}" style="display:inline;">
+                                        <button type="submit" class="btn btn-success">Unblock</button>
+                                    </form>
+                                {% endif %}
+                                <form method="POST" action="{{ url_for('delete_customer', customer_id=customer.id) }}" style="display:inline;">
+                                    <button type="submit" class="btn btn-warning">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <!-- Modal -->
+                        <div class="modal fade" id="profileModal{{ customer.id }}" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel{{ customer.id }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="profileModalLabel{{ customer.id }}">Profile of {{ customer.user_name }}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <p><strong>Address:</strong> {{ customer.address }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Pincode:</strong> {{ customer.pincode }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <p><strong>Approved:</strong> {{ 'Yes' if customer.is_approved else 'No' }}</p>
+                                        </div>
+                                        <h6>Completed Services:</h6>
+                                        <ul class="list-group">
+                                            {% for request in customer.completed_service_requests() %}
+                                                <li class="list-group-item">
+                                                    <strong>Service:</strong> {{ request.service.service_name }} <br>
+                                                    <strong>Status:</strong> {{ request.status_of_serviceRequest }} <br>
+                                                    <strong>Date Created:</strong> {{ request.date_created }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center text-muted">No customers found.</p>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const customers = JSON.parse(document.getElementById('customerSearch').dataset.customers);
+        const searchInput = document.getElementById('customerSearch');
+        const dropdown = document.getElementById('customerDropdown');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            dropdown.innerHTML = ''; // Clear previous suggestions
+            dropdown.style.display = 'none'; // Hide dropdown initially
+
+            if (query) {
+                const filteredCustomers = customers.filter(customer => customer.user_name.toLowerCase().includes(query));
+                filteredCustomers.forEach(customer => {
+                    const item = document.createElement('a');
+                    item.className = 'dropdown-item';
+                    item.href = '#';
+                    item.textContent = customer.user_name;
+                    item.onclick = function() {
+                        searchInput.value = customer.user_name; // Set input value to selected name
+                        dropdown.style.display = 'none'; // Hide dropdown
+                    };
+                    dropdown.appendChild(item);
+                });
+                if (filteredCustomers.length) {
+                    dropdown.style.display = 'block'; // Show dropdown if there are suggestions
+                }
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && e.target !== searchInput) {
+                dropdown.style.display = 'none'; // Hide dropdown if clicked outside
+            }
+        });
+    });
+</script>
+{% endblock %}

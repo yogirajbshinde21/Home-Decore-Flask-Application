@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block cont %}
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+<!-- Page Styles -->
+<style>
+    .bg-danger-gradient {
+        background: linear-gradient(90deg, #dc3545, #ff6b81);
+    }
+    .card-header {
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+    .table thead th {
+        border-bottom: 2px solid #dc3545;
+    }
+    </style>
+{% endblock %}
+
+{% block home %}
+<a class="navbar-brand" href="/admin_dashboard">HomeDecore Services</a>
+{% endblock %}
+
+{% block navigation %}
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('service_requests') }}">Service Requests</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('search_professionals') }}">Search Professionals</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('search_customers') }}">Search Customers</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-light">
+    <!-- Page Header -->
+    <div class="row bg-danger text-white py-4 mb-4 shadow-sm">
+        <div class="col-12 text-center">
+            <h1 class="display-4 mb-2">
+                <i class="fas fa-concierge-bell me-3"></i>Available Services
+            </h1>
+            <p class="h5 opacity-75">Manage all available services and categories</p>
+        </div>
+    </div>
+
+    <!-- Services Table -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-danger-gradient text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">List of Services</h3>
+                    <a href="{{ url_for('admin_add_service') }}" class="btn btn-outline-light">
+                        <i class="fas fa-plus me-1"></i>Add New Service
+                    </a>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped align-middle">
+                        <thead class="bg-light text-dark">
+                            <tr>
+                                <th>Service Name</th>
+                                <th>Category Name</th>
+                                <th>Description</th>
+                                <th>Base Price</th>
+                                <th>Available Professionals</th>
+                                <th>Time Required</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in services %}
+                            <tr>
+                                <td>{{ service.service_name }}</td>
+                                <td>{{ service.category.category_name }}</td>
+                                <td>{{ service.service_description or 'No description available' }}</td>
+                                <td class="text-center">₹{{ service.base_price or 'N/A' }}</td>
+                                <td class="text-center">{{ service.professionals_count if service.professionals_count > 0 else 'None' }}</td>
+                                <td class="text-center">{{ service.time_required or 'N/A' }} hours</td>
+                                <td>
+                                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editServiceModal{{ service.id }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteServiceModal{{ service.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Modals for Edit/Delete -->
+                             <!-- Edit Service Modal -->
+                             <div class="modal fade" id="editServiceModal{{ service.id }}" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form action="{{ url_for('edit_service', service_id=service.id) }}" method="POST">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editServiceModalLabel">Edit Service</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="serviceName" class="form-label">Service Name</label>
+                                                    <input type="text" class="form-control" id="serviceName" name="service_name" value="{{ service.service_name }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="serviceDescription" class="form-label">Description</label>
+                                                    <textarea class="form-control" id="serviceDescription" name="service_description">{{ service.service_description }}</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="basePrice" class="form-label">Base Price</label>
+                                                    <input type="number" class="form-control" id="basePrice" name="base_price" value="{{ service.base_price }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="timeRequired" class="form-label">Time Required</label>
+                                                    <input type="number" class="form-control" id="timeRequired" name="time_required" value="{{ service.time_required }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Delete Service Modal -->
+                            <div class="modal fade" id="deleteServiceModal{{ service.id }}" tabindex="-1" aria-labelledby="deleteServiceModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form action="{{ url_for('delete_service', service_id=service.id) }}" method="POST">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteServiceModalLabel">Delete Service</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete the service "{{ service.service_name }}"?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Table -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-danger-gradient text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">List of Categories</h3>
+                    <a href="{{ url_for('admin_add_category') }}" class="btn btn-outline-light">
+                        <i class="fas fa-plus me-1"></i>Add New Category
+                    </a>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped align-middle">
+                        <thead class="bg-light text-dark">
+                            <tr>
+                                <th>Category Name</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr>
+                                <td>{{ category.category_name }}</td>
+                                <td>{{ category.description or 'No description available' }}</td>
+                                <td>
+                                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editCategoryModal{{ category.id }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal{{ category.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Modals for Edit/Delete -->
+                             <!-- Edit Category Modal -->
+                             <div class="modal fade" id="editCategoryModal{{ category.id }}" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form action="{{ url_for('edit_category', category_id=category.id) }}" method="POST">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="categoryName" class="form-label">Category Name</label>
+                                                    <input type="text" class="form-control" id="categoryName" name="category_name" value="{{ category.category_name }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="categoryDescription" class="form-label">Description</label>
+                                                    <textarea class="form-control" id="categoryDescription" name="description">{{ category.description }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Delete Category Modal -->
+                            <div class="modal fade" id="deleteCategoryModal{{ category.id }}" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form action="{{ url_for('delete_category', category_id=category.id) }}" method="POST">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete the category "{{ category.category_name }}"?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

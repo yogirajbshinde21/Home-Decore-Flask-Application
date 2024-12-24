@@ -1,0 +1,278 @@
+/* Navbar Transparent with Blur Effect and Hover Animation */
+.animated-gradient-navbar {
+    background: rgba(255, 255, 255, 0.2); /* Transparent base for frosted glass */
+    background: linear-gradient(135deg, rgba(255, 209, 217, 0.3), rgba(217, 249, 213, 0.3), rgba(255, 236, 210, 0.3));
+    background-size: 300% 300%;
+    animation: softGradientAnimation 12s ease infinite;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(10px); /* WebKit support */
+    padding: 0.6rem 1rem; /* Slightly larger padding for aesthetics */
+    height: auto;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional border */
+    transition: transform 0.4s ease, box-shadow 0.4s ease; /* Smooth hover effect */
+}
+
+.animated-gradient-navbar:hover {
+    transform: scale(1.02); /* Slight zoom effect */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+    background: linear-gradient(135deg, rgba(255, 209, 217, 0.5), rgba(217, 249, 213, 0.5), rgba(255, 236, 210, 0.5));
+}
+
+/* Smooth Gradient Animation */
+@keyframes softGradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Navbar Link Styling */
+.navbar a {
+    color: #333333; /* Dark text for contrast */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8); /* Soft glow */
+    position: relative;
+}
+
+.navbar a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #ff7eb3, #ff758c);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.navbar a:hover {
+    color: #222222; /* Slightly darker on hover */
+    text-shadow: 2px 2px 5px rgba(255, 255, 255, 1); /* More glow effect */
+    transform: scale(1.1); /* Slightly enlarge text */
+}
+
+.navbar a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Navbar Brand Styling */
+.navbar .navbar-brand {
+    color: #333333; /* Dark text for better contrast */
+    font-size: 1.8rem; /* Larger text for branding */
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.8); /* Glow effect */
+    transition: color 0.4s ease, text-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.navbar .navbar-brand:hover {
+    color: #000000; /* Stronger contrast */
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4); /* Darker glow */
+    transform: rotate(3deg); /* Slight rotation for playfulness */
+}
+
+/* Interactive Glow Effect on Links */
+.navbar a {
+    position: relative;
+    z-index: 1;
+}
+
+.navbar a::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.navbar a:hover::before {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Navbar Hover Color Change */
+.animated-gradient-navbar:hover .navbar a {
+    color: #ff616f; /* Cool pinkish hue for hover */
+    text-shadow: 1px 1px 5px rgba(255, 97, 111, 0.6);
+}
+
+/* Add space to avoid overlaying the content */
+body {
+    margin-top: 60px;
+}
+
+
+/* Navbar Link Styling for Better Contrast */
+.navbar a {
+    color: #2c2c54; /* Dark, soft blue to contrast with the gradient background */
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    font-size: 1rem;
+}
+
+.navbar a:hover {
+    color: #1b1b3a; /* Slightly darker blue for hover effect */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for better readability */
+}
+
+/* Navbar Brand Text Styling */
+.navbar-brand {
+    color: #2c2c54; /* Matches link color for consistency */
+    font-weight: 700;
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: #1b1b3a; /* Slightly darker on hover */
+}
+
+ /* Flash Message Container */
+.flash-messages {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2000;
+    width: 400px; /* Slightly wider for emphasis */
+    max-width: 90%; /* Responsive for smaller screens */
+}
+
+/* Flash Message Alerts */
+.flash-messages .alert {
+    position: relative;
+    border-radius: 15px;
+    padding: 25px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35); /* Deeper shadow for pop-out effect */
+    animation: popIn 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) forwards, fadeOut 6s ease forwards;
+    overflow: hidden;
+    backdrop-filter: blur(5px); /* Frosted glass effect */
+}
+
+/* Flash Message Gradients */
+.flash-messages .alert-success {
+    background: linear-gradient(135deg, #28a745, #88d68f);
+}
+
+.flash-messages .alert-danger {
+    background: linear-gradient(135deg, #dc3545, #ff6b81);
+}
+
+.flash-messages .alert-warning {
+    background: linear-gradient(135deg, #ffc107, #ffdb8c);
+}
+
+.flash-messages .alert-info {
+    background: linear-gradient(135deg, #17a2b8, #81d4fa);
+}
+
+/* Entry Animation */
+@keyframes popIn {
+    0% {
+        transform: scale(0.8) translateY(50px);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.05) translateY(-10px);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+}
+
+/* Close Button Styling */
+.alert-dismissible .btn-close {
+    filter: brightness(0) invert(1);
+    font-size: 1rem;
+    top: 10px;
+    right: 10px;
+}
+
+/* Light Flash Effect */
+.flash-messages .alert:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -150%; /* Start way outside the alert */
+    width: 150%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: skewX(-45deg);
+    animation: lightSweep 2s infinite linear;
+}
+
+/* Light Sweep Animation */
+@keyframes lightSweep {
+    0% {
+        left: -150%;
+    }
+    50% {
+        left: -50%;
+    }
+    100% {
+        left: 150%;
+    }
+}
+
+/* Glow Effect */
+.flash-messages .alert {
+    position: relative;
+    border-radius: 15px;
+    padding: 25px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35); /* Deeper shadow for pop-out effect */
+    animation: popIn 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) forwards, fadeOut 6s ease forwards; /* Updated delay */
+    overflow: hidden;
+    backdrop-filter: blur(5px); /* Frosted glass effect */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .flash-messages {
+        bottom: 10px;
+        right: 10px;
+        width: 90%;
+    }
+    .flash-messages .alert {
+        font-size: 1rem;
+        padding: 20px;
+    }
+}

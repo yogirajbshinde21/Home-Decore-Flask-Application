@@ -3,6 +3,18 @@
 {% block cont %}
 <!-- Font Awesome -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+
+
+<style>
+
+    .card-header.bg-danger-gradient {
+        background: linear-gradient(135deg, #ff4444, #ff616f); /* Red gradient */
+        color: #ffffff; /* White text for contrast */
+        text-align: center;
+        font-weight: bold;
+        border-radius: 5px 5px 0 0; /* Match card's border-radius */
+    }
+    </style>
 {% endblock %}
 
 {% block home %}  
@@ -34,15 +46,6 @@
 
 {% block content %}
 <div class="container mt-5">
-    <!-- Page Header -->
-    <div class="row bg-danger text-white py-4 mb-4 shadow-sm">
-        <div class="col-12 text-center">
-            <h1 class="display-4 mb-3">
-                <i class="fas fa-concierge-bell me-3"></i>Add New Category
-            </h1>
-        </div>
-    </div>
-
     <!-- Add Category Form -->
     <div class="row">
         <div class="col-md-6 offset-md-3">

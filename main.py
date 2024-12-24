@@ -13,7 +13,7 @@ import io
 import base64
 import plotly.graph_objects as go
 import plotly.io as pio
-import psycopg2
+# import psycopg2
 import re 
 from dotenv import load_dotenv
 
@@ -33,10 +33,10 @@ app.config['PASSWORD_HASH'] = 'sha512'
 
 # SQLite is a ORM (Object Relational Mapping) tool for working with databases in Python.
 # It bridges gap between the data representation used by databases and the code representation used by Python.
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///HouseHoldService.sqlite3'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///HouseHoldService.sqlite3'
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 # postgresql://homedecore_render_example_user:48gdqg8oatBYR1qmaJUwH0YrcPjWmWwQ@dpg-ctkeqsbv2p9s7387tct0-a.oregon-postgres.render.com/homedecore_render_example
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = "secret"   #Alternative to line 12 where we used app.secret_key

@@ -52,18 +52,68 @@
             margin-bottom: 2rem;
         }
 
+        /* Button Style */
         .hero .btn-primary {
-            padding: 0.8rem 2rem;
-            background: #121212;
-            color: #fff;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background 0.3s ease;
-        }
+    padding: 0.8rem 2rem;
+    background: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.6s ease, color 0.6s ease;
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+}
 
+        /* Gradient Animation for Button */
         .hero .btn-primary:hover {
-            background: #333;
+    background: linear-gradient(45deg, #4caf50, #2196f3, #00bcd4, #ffeb3b);
+    background-size: 300% 300%;
+    animation: hoverGradient 3s ease infinite;
+    color: #fff;
+}
+
+.hero .btn-primary {
+    animation: hoverOut 3s ease;
+}
+
+@keyframes hoverGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+@keyframes hoverOut {
+    0% {
+        background-position: 100% 50%;
+    }
+    50% {
+        background-position: 50% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+        /* Gradient Animation */
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* Background animation */
@@ -88,19 +138,7 @@
             }
         }
 
-        /* Gradient Animation */
-        @keyframes gradientAnimation {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
+        /* Features Section Styles */
         .features-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -113,13 +151,16 @@
             padding: 2rem;
             border-radius: 20px;
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out, opacity 0.4s ease-in-out;
+            opacity: 1;
         }
 
+        /* Hover Animation */
         .feature-card:hover {
             transform: translateY(-10px) scale(1.05);
             box-shadow: 0 10px 25px rgba(255, 126, 179, 0.6);
+            opacity: 1;
         }
 
         .feature-card i {
@@ -134,6 +175,7 @@
             color: #ff7eb3;
         }
 
+        /* Footer Styles */
         .footer {
             text-align: center;
             padding: 2rem;

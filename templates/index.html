@@ -8,164 +8,167 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <!-- External Styles -->
     <style>
+        /* General Styles */
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
-            background: #1c1c1c;
+            background: #121212;
             color: #fff;
-            line-height: 1.6;
         }
 
         .hero {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            height: 100vh;
-            background: linear-gradient(135deg, #ff758c, #ff7eb3);
-            animation: animateBG 20s ease-in-out infinite;
-            clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
             text-align: center;
-            padding-top: 10px;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
-        }
-
-        @keyframes animateBG {
-            0% { background: linear-gradient(135deg, #ff758c, #ff7eb3); }
-            50% { background: linear-gradient(135deg, #7c8cff, #758cdb); }
-            100% { background: linear-gradient(135deg, #ff758c, #ff7eb3); }
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            position: relative;
+            overflow: hidden;
         }
 
         .hero h1 {
-            font-size: 4rem;
+            font-size: 3rem;
+            margin-bottom: 1rem;
             text-transform: uppercase;
-            text-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
-            animation: fadeIn 1s ease-out;
+            letter-spacing: 2px;
+        }
+
+        .hero h1 span {
+            color: transparent;
+            background: linear-gradient(45deg, #4caf50, #2196f3, #00bcd4, #ffeb3b); /* Contrast colors */
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            animation: gradientAnimation 5s ease infinite;
+        }
+
+        .hero h1 span:first-of-type {
+            color: #fff; /* Make "Welcome to" white */
+            background: none; /* Remove gradient for "Welcome to" */
         }
 
         .hero p {
-            font-size: 1.4rem;
-            margin: 1.5rem 0;
-            animation: fadeIn 2s ease-out;
-            font-weight: 500;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
         }
 
-        .btn-primary {
-            display: inline-block;
-            padding: 1.2rem 2.5rem;
-            font-size: 1.3rem;
-            font-weight: 700;
+        .hero .btn-primary {
+            padding: 0.8rem 2rem;
+            background: #121212;
             color: #fff;
-            border: none;
-            border-radius: 50px;
-            box-shadow: 0 15px 35px rgba(255, 117, 140, 0.4);
-            text-transform: uppercase;
+            border-radius: 30px;
             text-decoration: none;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-            background: linear-gradient(45deg, #7c8cff, #758cdb);
-            animation: animateButton 20s ease-in-out infinite;
+            font-weight: bold;
+            transition: background 0.3s ease;
         }
 
-        @keyframes animateButton {
-            0% { background: linear-gradient(45deg, #7c8cff, #758cdb); }
-            50% { background: linear-gradient(45deg, #ff758c, #ff7eb3); }
-            100% { background: linear-gradient(45deg, #7c8cff, #758cdb); }
+        .hero .btn-primary:hover {
+            background: #333;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 50px rgba(255, 117, 140, 0.7);
-            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+        /* Background animation */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 126, 179, 0.2), transparent);
+            animation: animate-bg 5s linear infinite;
+            z-index: -1;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes animate-bg {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Gradient Animation */
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .features-section {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2.5rem;
-            padding: 3rem 1rem;
-            background: linear-gradient(135deg, #121212, #2a2a2a);
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
         }
 
         .feature-card {
-            background: linear-gradient(135deg, #282828, #3a3a3a);
-            width: 270px;
-            height: 300px;
-            padding: 2.5rem;
-            border-radius: 15px;
-            color: #fff;
+            background: linear-gradient(135deg, #2a2a2a, #3b3b3b);
+            padding: 2rem;
+            border-radius: 20px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-            transition: transform 0.4s, box-shadow 0.4s;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
 
         .feature-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8);
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 126, 179, 0.6);
         }
 
         .feature-card i {
-            font-size: 4rem;
-            margin-bottom: 1.2rem;
-            color: #ff7eb3;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover i {
-            transform: scale(1.2);
-        }
-
-        .feature-card h3 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            text-transform: uppercase;
+            font-size: 3rem;
             margin-bottom: 1rem;
             color: #ff7eb3;
         }
 
-        .feature-card p {
-            font-size: 1.1rem;
-            font-weight: 500;
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: #ff7eb3;
         }
 
         .footer {
             text-align: center;
-            padding: 2rem 1rem;
-            background: #121212;
-            color: #fff;
-            margin-top: 3rem;
-            box-shadow: inset 0 -5px 15px rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            background: #1c1c1c;
+            border-top: 1px solid #333;
+            color: #bbb;
+            font-size: 0.9rem;
         }
 
         .footer a {
-            color: #ff7eb3;
+            color: #758cdb;
             text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
+            font-weight: bold;
         }
 
         .footer a:hover {
-            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        /* Scroll Animation */
+        .feature-card.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .feature-card {
+            opacity: 0;
+            transform: translateY(50px);
         }
     </style>
 </head>
 <body>
     <div class="hero">
-        <h1>Welcome to HomeDecore</h1>
+        <h1><span>Welcome to </span><span>HomeDecore</span></h1>
         <p>Experience hassle-free services to make your home perfect.</p>
         <a href="/login" class="btn-primary">Get Started</a>
     </div>
@@ -191,13 +194,48 @@
             <h3>Painting Services</h3>
             <p>Transform your walls with professional painting solutions.</p>
         </div>
+        <div class="feature-card">
+            <i class="fas fa-seedling"></i>
+            <h3>Gardening Services</h3>
+            <p>Create and maintain beautiful gardens with our expert landscapers.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-chair"></i>
+            <h3>Furniture Assembly</h3>
+            <p>Hassle-free assembly and setup of your furniture, done right.</p>
+        </div>
+        <!-- New Feature Cards -->
+        <div class="feature-card">
+            <i class="fas fa-cogs"></i>
+            <h3>Home Automation</h3>
+            <p>Upgrade your home with smart automation for convenience and efficiency.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-door-open"></i>
+            <h3>Door Installation</h3>
+            <p>Secure and stylish door installation services for any home.</p>
+        </div>
     </div>
 
     <div class="footer">
         Are you an admin? <a href="/admin_login_page">Click here</a> to login.
     </div>
 
-    <!-- FontAwesome -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script>
+        // Scroll Animation Script
+        const cards = document.querySelectorAll('.feature-card');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        cards.forEach(card => {
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>

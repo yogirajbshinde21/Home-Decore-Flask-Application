@@ -259,7 +259,7 @@ body {
     font-size: 1.2rem;
     color: white;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35); /* Deeper shadow for pop-out effect */
-    animation: popIn 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) forwards, fadeOut 6s ease forwards; /* Updated delay */
+    animation: popIn 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) forwards, fadeOut 10s ease forwards; /* Updated delay */
     overflow: hidden;
     backdrop-filter: blur(5px); /* Frosted glass effect */
 }

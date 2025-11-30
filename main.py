@@ -1044,57 +1044,67 @@ def service_summary():
         flash("Please login as a customer first!", "danger")
         return redirect(url_for('login'))
 
-    customer_id = session.get('user_id')
+    try:
+        customer_id = session.get('user_id')
 
-    # Fetch service requests for the customer
-    service_requests = HouseholdServiceRequest.query.filter_by(customer_id=customer_id).all()
+        # Fetch service requests for the customer
+        service_requests = HouseholdServiceRequest.query.filter_by(customer_id=customer_id).all()
 
-    # Count the status of service requests
-    total_requests = len(service_requests)
-    accepted_requests = sum(1 for request in service_requests if request.status_of_serviceRequest == 'accepted')
-    completed_requests = sum(1 for request in service_requests if request.status_of_serviceRequest == 'completed')
-    rejected_requests = sum(1 for request in service_requests if request.status_of_serviceRequest == 'rejected')
-    pending_requests = sum(1 for request in service_requests if request.status_of_serviceRequest == 'pending')
+        # Count the status of service requests
+        total_requests = len(service_requests)
+        accepted_requests = sum(1 for request in service_requests if request.status_of_serviceRequest == 'accepted')
+        completed_requests = sum(1 for request in service_requests if request.status_of_serviceRequest == 'completed')
+        rejected_requests = sum(1 for request in service_requests if request.status_of_serviceRequest == 'rejected')
+        pending_requests = sum(1 for request in service_requests if request.status_of_serviceRequest == 'pending')
 
-    # Prepare data for Plotly
-    labels = ["Total Requests", "Accepted", "Completed", "Rejected", "Pending"]
-    values = [total_requests, accepted_requests, completed_requests, rejected_requests, pending_requests]
+        # Prepare data for Plotly
+        labels = ["Total Requests", "Accepted", "Completed", "Rejected", "Pending"]
+        values = [total_requests, accepted_requests, completed_requests, rejected_requests, pending_requests]
 
-    # Create a Plotly bar chart
-    fig = go.Figure(data=[go.Bar(x=labels, y=values)])
-    fig.update_layout(title='Service Request Summary',
-                      xaxis_title='Request Status',
-                      yaxis_title='Count')
+        # Create a Plotly bar chart
+        fig = go.Figure(data=[go.Bar(x=labels, y=values)])
+        fig.update_layout(title='Service Request Summary',
+                          xaxis_title='Request Status',
+                          yaxis_title='Count')
 
-    # Convert the figure to HTML
-    graph_html = pio.to_html(fig, full_html=False)
+        # Convert the figure to HTML
+        graph_html = pio.to_html(fig, full_html=False)
 
-    # Determine the most used service by the customer
-    most_used_service = (
-        HouseholdServiceRequest.query
-        .filter_by(customer_id=customer_id)  # Filter by the current customer
-        .join(HouseholdServices, HouseholdServiceRequest.service_id == HouseholdServices.id)  # Join with services
-        .group_by(HouseholdServices.service_name)
-        .order_by(db.func.count(HouseholdServiceRequest.id).desc())
-        .first()
-    )
+        # Determine the most used service by the customer
+        most_used_service_query = (
+            db.session.query(
+                HouseholdServices.service_name,
+                db.func.count(HouseholdServiceRequest.id).label('request_count')
+            )
+            .join(HouseholdServiceRequest, HouseholdServiceRequest.service_id == HouseholdServices.id)
+            .filter(HouseholdServiceRequest.customer_id == customer_id)
+            .group_by(HouseholdServices.service_name)
+            .order_by(db.func.count(HouseholdServiceRequest.id).desc())
+            .first()
+        )
 
-    most_used_service_name = most_used_service.service.service_name if most_used_service else "No services used yet"
+        most_used_service_name = most_used_service_query[0] if most_used_service_query else "No services used yet"
 
-    # Generate a helpful tip based on the request history
-    if total_requests == 0:
-        tip_message = "Tip: You haven't made any service requests yet. Consider exploring available services to find what you need."
-    elif completed_requests < accepted_requests:
-        tip_message = "Tip: It seems you have some accepted requests that are still pending completion. Follow up with the professionals to ensure timely service."
-    elif rejected_requests > 0:
-        tip_message = "Tip: You have some rejected requests. Consider reviewing the reasons for rejection and adjusting your requests accordingly."
-    else:
-        tip_message = "Tip: You're actively using the service! Keep exploring new services and professionals to enhance your experience."
+        # Generate a helpful tip based on the request history
+        if total_requests == 0:
+            tip_message = "Tip: You haven't made any service requests yet. Consider exploring available services to find what you need."
+        elif completed_requests < accepted_requests:
+            tip_message = "Tip: It seems you have some accepted requests that are still pending completion. Follow up with the professionals to ensure timely service."
+        elif rejected_requests > 0:
+            tip_message = "Tip: You have some rejected requests. Consider reviewing the reasons for rejection and adjusting your requests accordingly."
+        else:
+            tip_message = "Tip: You're actively using the service! Keep exploring new services and professionals to enhance your experience."
 
-    return render_template("service_summary.html", 
-                           graph_html=graph_html, 
-                           most_used_service=most_used_service_name,
-                           tip_message=tip_message)
+        return render_template("service_summary.html", 
+                               graph_html=graph_html, 
+                               most_used_service=most_used_service_name,
+                               tip_message=tip_message)
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error in service_summary: {str(e)}")
+        flash("An error occurred while loading the summary. Please try again.", "danger")
+        return redirect(url_for('customer_dashboard'))
 
 
 @app.route("/professional_summary", methods=['GET'])

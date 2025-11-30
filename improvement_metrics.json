@@ -1,0 +1,38 @@
+{
+  "customer_dashboard_n1": {
+    "baseline_ms": 3.8945674896240234,
+    "optimized_ms": 10.225057601928711,
+    "improvement_pct": -162.54667891031528,
+    "time_saved_ms": -6.3304901123046875
+  },
+  "admin_summary_separate": {
+    "baseline_ms": 10.563850402832031,
+    "optimized_ms": 1.7066001892089844,
+    "improvement_pct": 83.84490385483434,
+    "time_saved_ms": 8.857250213623047
+  },
+  "professional_search_unoptimized": {
+    "baseline_ms": 7.830619812011719,
+    "optimized_ms": 4.763603210449219,
+    "improvement_pct": 39.1669711362806,
+    "time_saved_ms": 3.0670166015625
+  },
+  "service_history_n1": {
+    "baseline_ms": 9.137153625488281,
+    "optimized_ms": 6.489992141723633,
+    "improvement_pct": 28.971401732595766,
+    "time_saved_ms": 2.6471614837646484
+  },
+  "rating_calculation_inefficient": {
+    "baseline_ms": 8.40616226196289,
+    "optimized_ms": 4.432916641235352,
+    "improvement_pct": 47.26586873900958,
+    "time_saved_ms": 3.973245620727539
+  },
+  "overall": {
+    "baseline_ms": 39.832353591918945,
+    "optimized_ms": 27.6181697845459,
+    "improvement_pct": 30.66397715913784,
+    "time_saved_ms": 12.214183807373047
+  }
+}

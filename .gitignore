@@ -1,3 +1,35 @@
+# Virtual Environment
 myvenv/
+venv/
+env/
+*.pyc
+
+# Database
 instance/
+*.sqlite3
+*.db
+
+# Python cache
 __pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Uploaded files (you may want to keep PDFs in git, remove this line if needed)
+static/pdfs/*.pdf

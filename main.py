@@ -31,15 +31,20 @@ app = Flask(__name__)    #Application instance
 app.secret_key = 'secret'  #flash requires a secret key that's why added it.
 app.config['PASSWORD_HASH'] = 'sha512'
 
-# SQLite is a ORM (Object Relational Mapping) tool for working with databases in Python.
-# It bridges gap between the data representation used by databases and the code representation used by Python.
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///HouseHoldService.sqlite3'
+# Database Configuration
+# Use PostgreSQL in production (Render), SQLite for local development
+database_url = os.environ.get("DATABASE_URL")
+if database_url:
+    # Fix for Render's postgres:// URL (SQLAlchemy needs postgresql://)
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Local development with SQLite
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///HouseHoldService.sqlite3'
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
-# postgresql://homedecore_render_example_user:48gdqg8oatBYR1qmaJUwH0YrcPjWmWwQ@dpg-ctkeqsbv2p9s7387tct0-a.oregon-postgres.render.com/homedecore_render_example
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = "secret"   #Alternative to line 12 where we used app.secret_key
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "secret")  # Use env variable in production
 
 app.config['UPLOAD_EXTENSIONS'] = ['.pdf']
 app.config['UPLOAD_FOLDER'] = os.path.join(curr_dir, 'static', "pdfs") 
@@ -1269,19 +1274,15 @@ def logout():
 if __name__=="__main__":   #means : if my app is running in the main file only, then only run the app else don't run it.
     # reset_database()  #reset the database everytime we do the changes in database.
 
-#   db.create_all()    #Creates all tables in the database based on the above defined models, if they don't already exists.
-
-
-# Create and start the Tkinter GUI in a separate thread
-    # def run_tkinter():
-    #     mainwin = tk.Tk()
-    #     mainwin.mainloop()
-
-    # tkinter_thread = threading.Thread(target=run_tkinter)
-    # tkinter_thread.start()
+    # Create tables if they don't exist
+    with app.app_context():
+        db.create_all()
+        print("Database tables created successfully!")
 
     # Start the Flask development server
-    app.run(debug=True)
+    # Use environment variables for host and port in production
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=os.environ.get("FLASK_ENV") != "production")
 
 
 

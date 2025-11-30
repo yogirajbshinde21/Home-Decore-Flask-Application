@@ -1,6 +1,6 @@
 import os
 import threading
-import tkinter as tk
+# import tkinter as tk  # Not needed for web deployment
 from flask import Flask, abort, jsonify, render_template, request, redirect, url_for,session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash

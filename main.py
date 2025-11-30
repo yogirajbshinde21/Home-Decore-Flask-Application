@@ -1276,7 +1276,73 @@ def logout():
        return redirect(url_for("login"))
 
 
+# ============================================================================
+# HEALTH CHECK & MONITORING ENDPOINTS
+# These endpoints are designed for uptime monitoring services like UptimeRobot
+# to keep the Render.com backend awake and verify system health
+# ============================================================================
 
+@app.route("/health", methods=['GET'])
+def health_check():
+    """
+    Lightweight health check endpoint for uptime monitoring.
+    Returns JSON with server status and timestamp.
+    Use this for basic "is the server alive?" checks.
+    """
+    return jsonify({
+        "status": "healthy",
+        "service": "Household Service Application",
+        "timestamp": datetime.now().isoformat(),
+        "environment": "production" if os.environ.get("DATABASE_URL") else "development"
+    }), 200
+
+
+@app.route("/api/status", methods=['GET'])
+def api_status():
+    """
+    Comprehensive status check with database connectivity verification.
+    This endpoint:
+    - Wakes up the server
+    - Connects to the database
+    - Verifies critical tables exist
+    - Returns detailed system status
+    
+    Recommended for primary UptimeRobot monitoring.
+    """
+    try:
+        # Test database connectivity by counting users
+        user_count = User.query.count()
+        service_count = HouseholdServices.query.count()
+        
+        return jsonify({
+            "status": "operational",
+            "database": "connected",
+            "timestamp": datetime.now().isoformat(),
+            "stats": {
+                "total_users": user_count,
+                "total_services": service_count
+            },
+            "message": "All systems operational"
+        }), 200
+        
+    except Exception as e:
+        # If database connection fails, return error status
+        return jsonify({
+            "status": "degraded",
+            "database": "disconnected",
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }), 503  # Service Unavailable
+
+
+@app.route("/ping", methods=['GET'])
+def ping():
+    """
+    Ultra-lightweight ping endpoint.
+    Returns minimal response to confirm server is awake.
+    Fastest response time, but doesn't verify database.
+    """
+    return jsonify({"pong": True, "timestamp": datetime.now().isoformat()}), 200
 
 
 

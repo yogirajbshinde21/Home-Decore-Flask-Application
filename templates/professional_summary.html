@@ -96,10 +96,14 @@
                     <strong>{{ average_services_by_others | round(2) }}</strong>.
                 </p>
                 {% if professional_service_count > 0 %}
-                    {% if professional_service_count > average_services_by_others %}
-                        <p class="text-light">Good News: You're completing {{ (professional_service_count / average_services_by_others)|round(2) }}x more services!</p>
+                    {% if average_services_by_others > 0 %}
+                        {% if professional_service_count > average_services_by_others %}
+                            <p class="text-light">Good News: You're completing {{ (professional_service_count / average_services_by_others)|round(2) }}x more services!</p>
+                        {% else %}
+                            <p class="text-light">Work harder! You're completing {{ (average_services_by_others / professional_service_count)|round(2) }}x fewer services.</p>
+                        {% endif %}
                     {% else %}
-                        <p class="text-light">Work harder! You're completing {{ (average_services_by_others / professional_service_count)|round(2) }}x fewer services.</p>
+                        <p class="text-light">You're the only active professional - keep up the great work!</p>
                     {% endif %}
                 {% else %}
                     <p class="text-warning">No services completed yet.</p>
